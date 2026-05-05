@@ -29,7 +29,7 @@ A modular numpy and scipy-based framework for simulating quantum many-body dynam
 
 ## Project Structure
 - time_simulation/
-    - __init__.py
+    - init.py
     - circuit.py          # Quantum state and gate application
     - gates.py            # Single-qubit gate definitions
     - hamiltonian.py      # Pauli Hamiltonian construction
