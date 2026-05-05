@@ -1,6 +1,6 @@
 # Quantum Trotter Evolution Simulator
 
-A modular numpy and scipy-based framework for simulating quantum many-body dynamics using both **exact unitary evolution** and **Trotterized time evolution**. The project is designed for studying quantum Hamiltonians, benchmarking approximation error in Trotter decompositions, and exploring scalable simulation workflows.
+A modular numpy and scipy-based framework for simulating quantum dynamics using both exact unitary evolution and Trotterized time evolution. The project is designed for studying quantum Hamiltonians, benchmarking approximation error in Trotter decompositions, and exploring scalable simulation workflows.
 
 ---
 
