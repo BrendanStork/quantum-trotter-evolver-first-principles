@@ -28,18 +28,14 @@ A modular numpy and scipy-based framework for simulating quantum many-body dynam
 ---
 
 ## Project Structure
-trotter-vs-exact-evolution/
-│
-├── time_simulation/
-│   ├── __init__.py
-│   ├── circuit.py          # Quantum state + gate application
-│   ├── gates.py            # Single-qubit gate definitions
-│   ├── hamiltonian.py      # Pauli Hamiltonian construction
-│   ├── evolution.py        # Exact + Trotter evolution
-│   ├── plotting.py         # Visualization utilities
-│
-├── examples/
-│   └── run_time_simulation.py   # Main experiment entry point
-│
-├── figures/
-└── README.md
+- time_simulation/
+    - __init__.py
+    - circuit.py          # Quantum state and gate application
+    - gates.py            # Single-qubit gate definitions
+    - hamiltonian.py      # Pauli Hamiltonian construction
+    - evolution.py        # Exact and Trotter evolution
+    - plotting.py         # Visualization utilities
+- examples/
+    - run_time_simulation.py   # Main experiment entry point
+- figures/
+- README.md
