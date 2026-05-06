@@ -39,3 +39,7 @@ A modular numpy and scipy-based framework for simulating quantum dynamics using 
     - run_time_simulation.py   # Main experiment entry point
 - figures/
 - README.md
+
+## Further Development
+
+Currently the trotter evolution is explicitly for 2 qubit evolution, which can be utilized to describe the hydrogen molecule hamiltonian. Current work is underway to extend to Trotterization to N qubits.  
