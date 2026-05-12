@@ -1,45 +1,213 @@
-# Quantum Trotter Evolution Simulator
+# Quantum Hamiltonian Simulation Framework
 
-A modular numpy and scipy-based framework for simulating quantum dynamics using both exact unitary evolution and Trotterized time evolution. The project is designed for studying quantum Hamiltonians, benchmarking approximation error in Trotter decompositions, and exploring scalable simulation workflows.
+A modular Python framework for simulating quantum many-body dynamics using exact and Trotterized evolution of generalized Pauli-string Hamiltonians.
 
----
-
-## Key Features
-
-- **Exact time evolution**
-  - Matrix exponential-based unitary propagation
-  - Arbitrary Hamiltonian construction from Pauli strings
-
-- **Trotterized evolution**
-  - First-order Trotter-Suzuki decomposition
-  - Configurable time step and Trotter depth
-  - Operator-level decomposition of Hamiltonians
-
-- **Expectation value tracking**
-  - Measurement of arbitrary Pauli observables
-  - Time-dependent observable dynamics
-  - Direct comparison: Trotter vs exact
-
-- **Visualization tools**
-  - Expectation value dynamics over time
-  - Convergence analysis vs Trotter step count
-  - Error analysis
+The framework supports arbitrary \(N\)-qubit systems, configurable Hamiltonian construction, expectation-value analysis, fidelity benchmarking, and Trotter error characterization.
 
 ---
 
-## Project Structure
-- time_simulation/
-    - init.py
-    - circuit.py          # Quantum state and gate application
-    - gates.py            # Single-qubit gate definitions
-    - hamiltonian.py      # Pauli Hamiltonian construction
-    - evolution.py        # Exact and Trotter evolution
-    - plotting.py         # Visualization utilities
-- examples/
-    - run_time_simulation.py   # Main experiment entry point
-- figures/
-- README.md
+# Features
 
-## Further Development
+## Generalized Pauli-String Hamiltonians
 
-Currently the trotter evolution is explicitly for 2 qubit evolution, which can be utilized to describe the hydrogen molecule hamiltonian. Current work is underway to extend to Trotterization to N qubits.opcd   
+Construct arbitrary Hamiltonians in the Pauli basis:
+
+\[
+H = \sum_i c_i P_i
+\]
+
+Example:
+
+```python
+basis = create_basis(
+    XX = 1.0,
+    YY = 1.0,
+    ZZ = 0.5,
+    IX = -0.2
+)
+```
+
+Supports:
+- Arbitrary qubit count
+- Arbitrary Pauli strings
+- Validation/error checking
+- Dense Hamiltonian generation
+
+---
+
+# Time Evolution
+
+## Exact Evolution
+
+Implements exact unitary evolution:
+
+\[
+|\psi(t)\rangle = e^{-iHt} |\psi(0)\rangle
+\]
+
+using matrix exponentiation.
+
+---
+
+## Trotterized Evolution
+
+Implements generalized product-formula decomposition for arbitrary Pauli-string Hamiltonians.
+
+Features include:
+- Automatic basis rotations
+- Generalized CNOT ladder construction
+- Arbitrary \(N\)-qubit support
+- Configurable Trotter step count
+
+---
+
+# Observables & Diagnostics
+
+## Expectation Values
+
+Compute expectation values of arbitrary Pauli operators:
+
+```python
+qc.expectation_value('ZZXI')
+```
+
+Supports:
+- Local observables
+- Multi-qubit correlators
+- General Pauli-string operators
+
+---
+
+## Fidelity Analysis
+
+Compute state fidelity between:
+- Exact evolution
+- Trotterized evolution
+
+for benchmarking Trotter accuracy.
+
+---
+
+## Error Characterization
+
+Includes utilities for:
+- Absolute error analysis
+- Log-scale error visualization
+- Trotter convergence analysis
+- Fidelity evolution over time
+
+---
+
+# Example
+
+## Construct Hamiltonian
+
+```python
+basis = create_basis(
+    XX = 1,
+    YY = 1,
+    ZZ = 1
+)
+```
+
+---
+
+## Compute Time Evolution
+
+```python
+results = expectation_vals_vs_time(
+    qc,
+    basis,
+    expectation_operator = 'ZZ',
+    trotter_steps = 30,
+    time = 20
+)
+```
+
+---
+
+## Plot Observables
+
+```python
+plt.figure()
+
+plot_expectation(
+    results,
+    label = '<ZZ>'
+)
+
+plt.legend()
+plt.show()
+```
+
+---
+
+# Project Structure
+
+```text
+project/
+│
+├── quantum_circuit.py
+├── evolution.py
+├── hamiltonians.py
+├── observables.py
+├── plotting.py
+├── utils.py
+│
+├── run.py
+│
+└── README.md
+```
+
+---
+
+# Core Components
+
+## Hamiltonian Construction
+Generation of dense Hamiltonians from arbitrary Pauli-string expansions.
+
+## Quantum Circuit Simulation
+Gate-based statevector simulation for arbitrary qubit counts.
+
+## Product-Formula Dynamics
+Generalized Trotter evolution for noncommuting Hamiltonian terms.
+
+## Observable Analysis
+Expectation-value and fidelity computation utilities.
+
+---
+
+# Dependencies
+
+- NumPy
+- SciPy
+- Matplotlib
+
+---
+
+# Future Extensions
+
+Planned extensions include:
+- Higher-order Suzuki-Trotter formulas
+- Sparse-operator support
+- Jordan-Wigner transformations
+- Fermionic Hamiltonians
+- Hubbard-model simulation
+- Tensor-network integration
+- GPU acceleration
+
+---
+
+# Author
+
+Brendan Stork
+
+BS & MS Physics — Quantum Engineering  
+San Jose State University
+
+Research areas include:
+- Quantum simulation
+- Quantum many-body systems
+- Condensed matter physics
+- Hamiltonian dynamics
+- Numerical quantum methods
