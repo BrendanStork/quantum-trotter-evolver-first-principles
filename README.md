@@ -1,6 +1,6 @@
 # Quantum Hamiltonian Simulation Framework
 
-A modular Python framework for simulating quantum many-body dynamics using exact and Trotterized evolution of generalized Pauli-string Hamiltonians.
+A modular numpy and scipy-based Python framework for simulating quantum many-body dynamics using exact and Trotterized evolution of generalized Pauli-string Hamiltonians.
 
 The framework supports arbitrary \(N\)-qubit systems, configurable Hamiltonian construction, expectation-value analysis, fidelity benchmarking, and Trotter error characterization.
 
@@ -12,9 +12,7 @@ The framework supports arbitrary \(N\)-qubit systems, configurable Hamiltonian c
 
 Construct arbitrary Hamiltonians in the Pauli basis:
 
-\[
-H = \sum_i c_i P_i
-\]
+H = Σᵢ cᵢPᵢ
 
 Example:
 
@@ -41,9 +39,7 @@ Supports:
 
 Implements exact unitary evolution:
 
-\[
-|\psi(t)\rangle = e^{-iHt} |\psi(0)\rangle
-\]
+|ψ(t)⟩ = e^(-iHt)|ψ(0)⟩
 
 using matrix exponentiation.
 
@@ -147,15 +143,15 @@ plt.show()
 ```text
 project/
 │
-├── quantum_circuit.py
+├── circuit.py
 ├── evolution.py
-├── hamiltonians.py
-├── observables.py
+├── hamiltonian.py
+├── expectation_values.py
 ├── plotting.py
-├── utils.py
 │
-├── run.py
-│
+├── examples/
+│   └──run_time_simulation.py
+├── figures/
 └── README.md
 ```
 
