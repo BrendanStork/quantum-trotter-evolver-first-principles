@@ -42,4 +42,4 @@ A modular numpy and scipy-based framework for simulating quantum dynamics using 
 
 ## Further Development
 
-Currently the trotter evolution is explicitly for 2 qubit evolution, which can be utilized to describe the hydrogen molecule hamiltonian. Current work is underway to extend to Trotterization to N qubits.  
+Currently the trotter evolution is explicitly for 2 qubit evolution, which can be utilized to describe the hydrogen molecule hamiltonian. Current work is underway to extend to Trotterization to N qubits.opcd   

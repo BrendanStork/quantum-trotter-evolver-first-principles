@@ -1,133 +1,121 @@
 import numpy as np
 from .gates import GATES
 
-def operator_tensor_product(Operator1, Operator2):
-    return np.kron(GATES[Operator1], GATES[Operator2])
+
+def build_full_operator(gate_matrix, target_qubit, num_qubits):
+    if target_qubit >= num_qubits:
+        raise ValueError("Invalid qubit index")
+
+    ops = []
+
+    for i in range(num_qubits):
+        if i == target_qubit:
+            ops.append(gate_matrix)     # already a matrix
+        else:
+            ops.append(GATES['I'])      # matrix
+    #print(ops)
+    full_op = ops[0]
+    #print(full_op)
+    for op in ops[1:]:
+        full_op = np.kron(full_op, op)
+
+    return full_op
+
+def apply_cnot(state, control, target):
+    n = int(len(state).bit_length() - 1)  # number of qubits
+    new_state = state.copy()
+
+    if control == target:
+        raise ValueError("Control and target must differ")
+
+    # You switch the indices from big endian to little (n - 1 = max index)
+    control_bit = n - 1 - control
+    target_bit = n - 1 - target
+
+    for i in range(len(state)):
+
+        # Step 1: shift control bit to LSB
+        shifted = i >> control_bit
+
+        # Step 2: isolate that bit
+        control_value = shifted & 1
+
+        if control_value == 1:
+
+            # Step 3: flip target bit
+            flipped_i = i ^ (1 << target_bit)
+
+            # Step 4: swap once
+            if i < flipped_i:
+                new_state[i], new_state[flipped_i] = (
+                    state[flipped_i],
+                    state[i],
+                )
+
+    return new_state
+
 
 class Quantum_Circuit:
-    def __init__(self, numqubits = 2):
-        #self.state = np.array([1, 0, 0, 0])
+    def __init__(self, numqubits):
         self.state = np.zeros(2**numqubits, dtype=complex)
         self.state[0] = 1
         self.numqubits = numqubits
 
-    '''
-    def build_n_qubit_operator(self, single_qubit_gate, target_qubit):
-        ops = []
-    
-        for i in range(self.numqubits):
-            if i == target_qubit:
-                ops.append(single_qubit_gate)
-            else:
-                ops.append(GATES['I'])
-        return ops
-    '''
-        
-    def gate_op_no_params(self, Gate, qubitIndex):
-        if qubitIndex == 0:
-            self.state = operator_tensor_product(Gate, 'I') @ self.state
-        elif qubitIndex == 1:
-            self.state = operator_tensor_product('I', Gate) @ self.state
-        else:
-            raise ValueError('Invalid qubit index')
-        return self.state
-        
-    def gate_op_with_params(self, Gate, qubitIndex, theta):
-        if qubitIndex == 0:
-            self.state = np.kron(GATES[Gate](theta), GATES['I']) @ self.state
-        elif qubitIndex == 1:
-            self.state = np.kron(GATES['I'], GATES[Gate](theta)) @ self.state
-        else:
-            raise ValueError('Invalid qubit index')
+    def gate_op(self, Gate, qubitIndex):
+        full_op = build_full_operator(Gate, qubitIndex, self.numqubits)
+        self.state = full_op @ self.state
         return self.state
     
     def x(self, qubitIndex):
-        return self.gate_op_no_params('X', qubitIndex)
-        
+        return self.gate_op(GATES['X'], qubitIndex)
         
     def y(self, qubitIndex):
-        return self.gate_op_no_params('Y', qubitIndex)
+        return self.gate_op(GATES['Y'], qubitIndex)
         
     def z(self, qubitIndex):
-        return self.gate_op_no_params('Z', qubitIndex)
+        return self.gate_op(GATES['Z'], qubitIndex)
         
     def h(self, qubitIndex):
-        return self.gate_op_no_params('H', qubitIndex)
+        return self.gate_op(GATES['H'], qubitIndex)
 
     def s(self, qubitIndex):
-        return self.gate_op_no_params('S', qubitIndex)
+        return self.gate_op(GATES['S'], qubitIndex)
+
+    def t(self, qubitIndex):
+        return self.gate_op(GATES['T'], qubitIndex)
 
     def sdag(self, qubitIndex):
-        return self.gate_op_no_params('Sdag', qubitIndex)
+        return self.gate_op(GATES['Sdag'], qubitIndex)
+
+    def p(self, qubitIndex, theta):
+        return self.gate_op(GATES['P'](theta), qubitIndex)
+
+    def rx(self, qubitIndex, theta):
+        return self.gate_op(GATES['RX'](theta), qubitIndex)
+
+    def ry(self, qubitIndex, theta):
+        return self.gate_op(GATES['RY'](theta), qubitIndex)
         
     def rz(self, qubitIndex, theta):
-        return self.gate_op_with_params('RZ', qubitIndex, theta)
-
-    def P(self, theta):
-        P = np.array([[1, 0],[0, np.e**(1j*theta)]])
-        return P
+        return self.gate_op(GATES['RZ'](theta), qubitIndex)
 
     def cx(self, control, target):
-        if control == target:
-            raise ValueError('Target qubit must be different from control qubit')
-        elif control == 0:
-            CX = np.array([[1, 0, 0, 0], [0, 1, 0, 0],
-                            [0, 0, 0, 1], [0, 0, 1, 0]])
-            self.state = CX @ self.state
-        elif control == 1:
-            CX = np.array([[1, 0, 0, 0], [0, 0, 0, 1],
-                            [0, 0, 1, 0], [0, 1, 0, 0]])
-            self.state = CX @ self.state
-        else:
-            raise ValueError('Invalid qubit index')
+        self.state = apply_cnot(self.state, control, target)
         return self.state
         
-    def expectation_value(self, operator1, operator2 = 'I'):
-        return np.vdot(self.state, np.kron(GATES[operator1], GATES[operator2]) @ self.state)
+    def expectation_value(self, pauli_string):
 
-def initialize_state(*operations):
-    qc = Quantum_Circuit()
-    for gate, qubit in operations:
-        if gate not in GATES:
-            raise ValueError(f"Unknown gate: {gate}")
+        if len(pauli_string) != self.numqubits:
+            raise ValueError('Pauli string length must equal number of qubits')
 
-        if gate == 'X':
-            qc.x(qubit)
-        elif gate == 'Y':
-            qc.y(qubit)
-        elif gate == 'Z':
-            qc.z(qubit)
-        elif gate == 'H':
-            qc.h(qubit)
-        elif gate == 'S':
-            qc.s(qubit)
-        elif gate == 'Sdag':
-            qc.sdag(qubit)
-        #elif gate == 'Rz':
-        #    qc.sdag(qubit)
+        operator = GATES[pauli_string[0]] # Builds operator
+        for p in pauli_string[1:]:
+            operator = np.kron(operator, GATES[p])
+        return np.vdot(self.state, operator @ self.state).real # Expectation value
+    
+    def copy(self):
 
-        return qc
-        
-def initialize_state(*operations):
-    qc = Quantum_Circuit()
-    for gate, qubit in operations:
-        if gate not in GATES:
-            raise ValueError(f"Unknown gate: {gate}")
+        new_qc = Quantum_Circuit(self.numqubits)
+        new_qc.state = self.state.copy()
 
-        if gate == 'X':
-            qc.x(qubit)
-        elif gate == 'Y':
-            qc.y(qubit)
-        elif gate == 'Z':
-            qc.z(qubit)
-        elif gate == 'H':
-            qc.h(qubit)
-        elif gate == 'S':
-            qc.s(qubit)
-        elif gate == 'Sdag':
-            qc.sdag(qubit)
-        #elif gate == 'Rz':
-        #    qc.sdag(qubit)
-
-        return qc
-        
+        return new_qc
