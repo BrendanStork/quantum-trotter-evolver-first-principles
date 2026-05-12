@@ -27,7 +27,7 @@ def plot_expectation_value_vs_time(expectation_vals, exclusive = None, **plot_kw
     plt.ylabel('Expectation Value', size = 15, **plot_kwargs)
     plt.title(fr'Exact vs Trotterized Time Evolution (n={trotter_steps})', size = 15, **plot_kwargs)
     plt.xlim(0, t[-1])
-    plt.legend()
+    #plt.legend()
 
 
 def plot_expectation_value_vs_steps(steps_expectation_vals, **plot_kwargs):
@@ -40,7 +40,7 @@ def plot_expectation_value_vs_steps(steps_expectation_vals, **plot_kwargs):
     plt.ylabel('Expectation Value', size = 15, **plot_kwargs)
     plt.title(fr'Expectation Value vs Trotter Steps', size = 15, **plot_kwargs)
     plt.xlim(1, steps_array[-1])
-    plt.legend()
+    #plt.legend()
 
 
 def plot_error_vs_time(expectation_vals, method = 'absolute', **plot_kwargs):
@@ -52,6 +52,6 @@ def plot_error_vs_time(expectation_vals, method = 'absolute', **plot_kwargs):
     plt.plot(t, error_array, label = rf'Error $\langle {expectation_operator} \rangle$', **plot_kwargs)
     plt.xlabel('Time', size = 15, **plot_kwargs)
     plt.ylabel('Expectation Value Error', size = 15, **plot_kwargs)
-    plt.title(fr'Absolute  Trotter Error vs Time', size = 15, **plot_kwargs)
+    plt.title(fr'Absolute Trotter Error vs Time', size = 15, **plot_kwargs)
     plt.xlim(1, t[-1])
-    plt.legend()
+    #plt.legend()

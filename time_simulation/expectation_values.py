@@ -1,3 +1,4 @@
+import numpy as np
 from .evolution import trotter_evolve, exact_evolve
 from .circuit import Quantum_Circuit
 from .hamiltonian import exact_hamiltonian

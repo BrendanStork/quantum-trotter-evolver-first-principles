@@ -10,7 +10,7 @@ def string_to_operator(pauli_string):
 
 def create_hamiltonian(**pauli_terms):
     if not pauli_terms:
-        raise ValueError('Hamiltonian cannot be empty')`
+        raise ValueError('Hamiltonian cannot be empty')
         
     pauli_ops = ['I', 'X', 'Y', 'Z']
     lengths = {len(term) for term in pauli_terms} # If all the terms have the same length, set length = 1
